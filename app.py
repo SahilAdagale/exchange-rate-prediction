@@ -23,7 +23,7 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "src"))
 
 from data_loader import build_ticker_symbol, fetch_live_data, fetch_historical_data
-from preprocess import engineer_features, get_feature_columns
+from preprocess import engineer_features
 from train import train_model
 from predictor import predict_future
 
@@ -410,50 +410,6 @@ st.dataframe(
 )
 
 
-# ── Feature Importance ──
-with st.expander("🔍 What's driving the AI prediction?"):
-    feature_cols = get_feature_columns()
-    importances = model.feature_importances_
-
-    importance_df = pd.DataFrame({
-        'Feature': feature_cols,
-        'Importance': importances
-    }).sort_values('Importance', ascending=True)
-
-    fig_imp = go.Figure(go.Bar(
-        x=importance_df['Importance'],
-        y=importance_df['Feature'],
-        orientation='h',
-        marker=dict(
-            color=importance_df['Importance'],
-            colorscale='Viridis',
-            showscale=False
-        ),
-        hovertemplate='%{y}: %{x:.3f}<extra></extra>'
-    ))
-
-    fig_imp.update_layout(
-        template='plotly_dark',
-        plot_bgcolor='rgba(0,0,0,0)',
-        paper_bgcolor='rgba(0,0,0,0)',
-        font=dict(color='rgba(255,255,255,0.8)'),
-        xaxis_title="Importance Score",
-        yaxis_title="Feature",
-        height=300,
-        margin=dict(l=20, r=20, t=20, b=20)
-    )
-
-    st.plotly_chart(fig_imp, use_container_width=True)
-
-    st.markdown("""
-    **How to read this chart:**
-    - Higher importance = the model relies more on this feature for predictions.
-    - **MA_7 / MA_30** (Moving Averages): Capture short and long-term trends.
-    - **Volatility_7**: How much the rate has been fluctuating recently.
-    - **Daily_Return**: The average daily change in rate.
-    - **Day_of_Week**: Some currencies move differently on certain days.
-    - **Day_Num**: Captures the overall long-term direction.
-    """)
 
 
 # ──────────────────────────────────────────────

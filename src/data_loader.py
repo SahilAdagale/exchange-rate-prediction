@@ -50,7 +50,7 @@ def fetch_live_data(ticker: str, period: str = "1mo") -> pd.DataFrame:
         data = yf.download(ticker, period=period, interval="1d", progress=False)
         if data.empty:
             return pd.DataFrame()
-        # Flatten multi-level columns if present (yfinance sometimes returns multi-index)
+        
         if isinstance(data.columns, pd.MultiIndex):
             data.columns = data.columns.get_level_values(0)
         return data
@@ -78,7 +78,7 @@ def fetch_historical_data(ticker: str, period: str = "2y") -> pd.DataFrame:
         data = yf.download(ticker, period=period, progress=False)
         if data.empty:
             return pd.DataFrame()
-        # Flatten multi-level columns if present
+    
         if isinstance(data.columns, pd.MultiIndex):
             data.columns = data.columns.get_level_values(0)
         data.reset_index(inplace=True)
@@ -89,11 +89,11 @@ def fetch_historical_data(ticker: str, period: str = "2y") -> pd.DataFrame:
 
 
 if __name__ == "__main__":
-    # Quick test — run this file directly to verify data loading works
+    
     ticker = build_ticker_symbol("USD", "INR")
     print(f"Ticker: {ticker}")
 
-    df_live = fetch_live_data.__wrapped__(ticker)  # bypass cache for testing
+    df_live = fetch_live_data.__wrapped__(ticker)  
     print(f"\n--- Live Data (last 5 days) ---")
     print(df_live.tail())
 
